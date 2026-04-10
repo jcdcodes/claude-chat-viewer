@@ -1,2 +1,430 @@
 /* static/style.css */
-/* Styles will be added in Task 6 */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #111;
+  background: #fff;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+a { color: #4a4ae0; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+pre, code {
+  font-family: ui-monospace, 'SF Mono', 'Cascadia Code', monospace;
+  font-size: 12px;
+}
+
+code {
+  background: #e4e4e4;
+  padding: 1px 5px;
+  border-radius: 3px;
+  color: #000;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: #111;
+  line-height: 1.5;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+.page-header h1 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #000;
+}
+
+.controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.controls input[type="text"] {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  background: #f8f8f8;
+  color: #111;
+  border-radius: 4px;
+  width: 240px;
+  font-size: 13px;
+}
+
+.view-toggle {
+  display: flex;
+  background: #eee;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.view-toggle button {
+  padding: 5px 12px;
+  border: none;
+  background: transparent;
+  color: #444;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.view-toggle button.active {
+  background: #4a4ae0;
+  color: #fff;
+}
+
+.project-group { margin-bottom: 16px; }
+
+.project-name {
+  font-weight: 700;
+  color: #4a4ae0;
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+
+.project-group .session-row { margin-left: 12px; }
+
+.session-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 10px;
+  background: #f5f5f7;
+  border-radius: 4px;
+  margin-bottom: 4px;
+  color: #111;
+  text-decoration: none;
+}
+
+.session-row:hover { background: #ededf2; }
+
+.session-info { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+
+.session-title {
+  font-weight: 500;
+  color: #000;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.project-name-inline {
+  font-size: 11px;
+  font-weight: 700;
+  color: #4a4ae0;
+  white-space: nowrap;
+}
+
+.session-branch {
+  font-size: 11px;
+  color: #444;
+  white-space: nowrap;
+}
+
+.session-meta {
+  display: flex;
+  gap: 12px;
+  font-size: 11px;
+  color: #333;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.session-header {
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+.session-header a {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.session-header h1 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #000;
+  margin-top: 4px;
+}
+
+.session-header-meta {
+  font-size: 12px;
+  color: #111;
+  margin-top: 2px;
+}
+
+.session-header-meta .project-name {
+  font-size: 12px;
+}
+
+.collapse-controls {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.collapse-controls button {
+  padding: 4px 10px;
+  background: #e0e0ea;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  color: #111;
+  font-family: inherit;
+}
+
+.collapse-controls button:hover { background: #d0d0da; }
+
+.conversation { max-width: 800px; }
+
+.message { margin-bottom: 20px; }
+
+.message-header {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+
+.message-author {
+  font-weight: 700;
+  font-size: 12px;
+  color: #000;
+}
+
+.author-assistant { color: #4a4ae0; }
+
+.message-model {
+  font-size: 10px;
+  color: #444;
+}
+
+.message-time {
+  font-size: 10px;
+  color: #444;
+}
+
+.message-user .message-body .text-block {
+  padding: 10px 14px;
+  background: #e8f0fe;
+  border-radius: 8px;
+  color: #000;
+}
+
+.message-assistant .message-body .text-block {
+  padding: 10px 14px;
+  background: #f5f5ff;
+  border-radius: 8px;
+  color: #000;
+}
+
+.thinking-block {
+  margin-bottom: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.thinking-block summary {
+  padding: 8px 12px;
+  background: #f5f5f5;
+  cursor: pointer;
+  font-size: 12px;
+  color: #555;
+  font-style: italic;
+  list-style: none;
+}
+
+.thinking-block summary::before {
+  content: "\25B6 ";
+  font-style: normal;
+  font-size: 10px;
+}
+
+.thinking-block[open] summary::before {
+  content: "\25BC ";
+}
+
+.thinking-content {
+  padding: 10px 14px;
+  background: #fafafa;
+  font-size: 13px;
+  color: #111;
+  white-space: pre-wrap;
+}
+
+.tool-call {
+  margin-bottom: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.tool-call summary {
+  padding: 8px 12px;
+  background: #f5f5f5;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  list-style: none;
+}
+
+.tool-call summary::before {
+  content: "\25B6 ";
+  font-size: 10px;
+}
+
+.tool-call[open] summary::before {
+  content: "\25BC ";
+}
+
+.tool-name {
+  font-weight: 700;
+  color: #333;
+}
+
+.tool-args {
+  color: #111;
+  font-size: 11px;
+  background: #e4e4e4;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-family: ui-monospace, 'SF Mono', 'Cascadia Code', monospace;
+}
+
+.tool-input, .tool-output {
+  padding: 8px 12px;
+  background: #f8f8f8;
+  border-top: 1px solid #e0e0e0;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.tool-error { background: #fff0f0; }
+
+.subagent-block {
+  margin-bottom: 20px;
+  border-left: 3px solid #4a4ae0;
+  padding-left: 12px;
+}
+
+.subagent-block > details {
+  border: 1px solid #c0c0d8;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.subagent-header {
+  padding: 10px 14px;
+  background: #f4f4ff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  list-style: none;
+}
+
+.subagent-header::before {
+  content: "\25B6 ";
+  color: #4a4ae0;
+  font-size: 10px;
+}
+
+details[open] > .subagent-header::before {
+  content: "\25BC ";
+}
+
+.subagent-type {
+  font-weight: 700;
+  color: #4a4ae0;
+  font-size: 12px;
+}
+
+.subagent-desc {
+  font-size: 12px;
+  color: #111;
+}
+
+.subagent-meta {
+  font-size: 10px;
+  color: #333;
+  margin-left: auto;
+}
+
+.subagent-conversation {
+  padding: 12px 14px;
+  background: #fcfcff;
+}
+
+.subagent-conversation .message { margin-bottom: 12px; }
+
+.subagent-conversation .text-block {
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.search-results { margin-top: 16px; }
+
+.search-result {
+  display: block;
+  padding: 10px 12px;
+  background: #f5f5f7;
+  border-radius: 4px;
+  margin-bottom: 6px;
+  color: #111;
+}
+
+.search-result:hover { background: #ededf2; text-decoration: none; }
+
+.search-result-header {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+
+.search-result-snippet {
+  font-size: 12px;
+  color: #333;
+  font-family: ui-monospace, 'SF Mono', 'Cascadia Code', monospace;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+mark {
+  background: #fff3a8;
+  color: #000;
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
+.highlight-flash {
+  animation: flash 1.5s ease-out;
+}
+
+@keyframes flash {
+  0% { background: #fff3a8; }
+  100% { background: transparent; }
+}
+
+.hidden { display: none; }
