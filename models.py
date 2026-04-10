@@ -84,9 +84,7 @@ class Session:
 
     @property
     def interaction_time_display(self) -> str:
-        if len(self.messages) < 2:
-            return "~<1 min"
-        total_seconds = (self.messages[-1].timestamp - self.messages[0].timestamp).total_seconds()
+        total_seconds = self.interaction_time
         total_minutes = round(total_seconds / 60)
         if total_minutes < 1:
             return "~<1 min"

@@ -127,18 +127,24 @@ def test_session_interaction_time_format():
 
 
 def test_session_interaction_time_format_hours():
-    ts1 = datetime(2026, 4, 6, 18, 0, 0, tzinfo=timezone.utc)
-    ts2 = datetime(2026, 4, 6, 19, 15, 0, tzinfo=timezone.utc)
-    messages = [
-        Message(uuid="1", parent_uuid=None, type="user", timestamp=ts1, content=[], model=None),
-        Message(uuid="2", parent_uuid="1", type="assistant", timestamp=ts2, content=[], model=None),
-    ]
+    from datetime import timedelta
+    # 8 messages, each 10 min apart (all within 15-min threshold)
+    # Total active time: 7 * 10 = 70 min = ~1 hr 10 min
+    base = datetime(2026, 4, 6, 18, 0, 0, tzinfo=timezone.utc)
+    messages = []
+    for i in range(8):
+        ts = base + timedelta(minutes=i * 10)
+        messages.append(
+            Message(uuid=str(i), parent_uuid=str(i-1) if i else None,
+                    type="user" if i % 2 == 0 else "assistant",
+                    timestamp=ts, content=[], model=None)
+        )
     session = Session(
-        id="s", project="p", timestamp=ts1, title="t",
+        id="s", project="p", timestamp=messages[0].timestamp, title="t",
         git_branch=None, cwd="/", version="1", file_size=0,
         messages=messages, subagents={},
     )
-    assert session.interaction_time_display == "~1 hr 15 min"
+    assert session.interaction_time_display == "~1 hr 10 min"
 
 
 def test_session_file_size_display():
