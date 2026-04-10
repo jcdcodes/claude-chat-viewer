@@ -13,6 +13,8 @@ def create_app(projects_dir: Path | None = None) -> Flask:
         projects_dir = DEFAULT_PROJECTS_DIR
 
     app = Flask(__name__)
+    from search import highlight_snippet
+    app.jinja_env.filters["highlight"] = lambda snippet, query: highlight_snippet(snippet, query)
     projects = load_projects(projects_dir)
 
     session_lookup: dict[str, tuple] = {}

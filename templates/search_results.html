@@ -15,7 +15,7 @@
           <span class="session-title">{{ result.session_title }}</span>
           <span class="project-name-inline">{{ result.project_name }}</span>
         </div>
-        <div class="search-result-snippet">{{ result.snippet }}</div>
+        <div class="search-result-snippet">{{ result.snippet | highlight(query) | safe }}</div>
       </a>
       {% endfor %}
     </div>

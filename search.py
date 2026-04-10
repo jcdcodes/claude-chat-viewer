@@ -1,6 +1,7 @@
 # search.py
 from __future__ import annotations
 
+import html as html_module
 from dataclasses import dataclass
 
 from models import (
@@ -82,3 +83,25 @@ def _make_snippet(text: str, match_idx: int, match_len: int, context: int = 80) 
     if end < len(text):
         snippet = snippet + "..."
     return snippet
+
+
+def highlight_snippet(snippet: str, query: str) -> str:
+    """Wrap matching text in <mark> tags for highlighting. HTML-escapes the snippet first."""
+    escaped = html_module.escape(snippet)
+    query_lower = query.lower()
+    escaped_lower = escaped.lower()
+
+    result = []
+    i = 0
+    while i < len(escaped):
+        idx = escaped_lower.find(query_lower, i)
+        if idx == -1:
+            result.append(escaped[i:])
+            break
+        result.append(escaped[i:idx])
+        result.append("<mark>")
+        result.append(escaped[idx : idx + len(query)])
+        result.append("</mark>")
+        i = idx + len(query)
+
+    return "".join(result)

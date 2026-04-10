@@ -2,7 +2,7 @@
 from pathlib import Path
 
 from parser import load_projects
-from search import search_sessions, SearchResult
+from search import search_sessions, SearchResult, highlight_snippet
 
 
 def test_search_finds_user_message(projects_dir: Path):
@@ -49,3 +49,15 @@ def test_search_case_insensitive(projects_dir: Path):
     projects = load_projects(projects_dir)
     results = search_sessions(projects, "LOGIN FLOW")
     assert len(results) >= 1
+
+
+def test_highlight_snippet_marks_match():
+    result = highlight_snippet("The login flow works", "login flow")
+    assert "<mark>login flow</mark>" in result
+
+
+def test_highlight_snippet_escapes_html():
+    result = highlight_snippet("use <script> tag", "script")
+    assert "&lt;" in result
+    assert "<mark>script</mark>" in result
+    assert "<script>" not in result
