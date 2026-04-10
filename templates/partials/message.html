@@ -1,0 +1,24 @@
+<div class="message message-{{ message.type }}" id="msg-{{ message.uuid }}">
+  <div class="message-header">
+    {% if message.type == "user" %}
+      <span class="message-author">You</span>
+    {% else %}
+      <span class="message-author author-assistant">Claude</span>
+      {% if message.model %}
+      <span class="message-model">{{ message.model }}</span>
+      {% endif %}
+    {% endif %}
+    <span class="message-time">{{ message.timestamp.strftime('%I:%M %p') }}</span>
+  </div>
+  <div class="message-body">
+    {% for block in message.content %}
+      {% if block.type == "text" %}
+        <div class="text-block">{{ block.text }}</div>
+      {% elif block.type == "thinking" %}
+        {% include "partials/thinking.html" %}
+      {% elif block.type == "tool_use" %}
+        {% include "partials/tool_call.html" %}
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>

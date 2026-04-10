@@ -1,0 +1,13 @@
+<div class="subagent-block">
+  <details hx-get="/api/subagent/{{ session.id }}/{{ subagent.id }}"
+           hx-trigger="toggle once"
+           hx-target="find .subagent-content"
+           hx-swap="innerHTML">
+    <summary class="subagent-header">
+      <span class="subagent-type">{{ subagent.agent_type }} agent</span>
+      <span class="subagent-desc">{{ subagent.description }}</span>
+      <span class="subagent-meta">{{ subagent.message_count }} messages</span>
+    </summary>
+    <div class="subagent-content">Loading...</div>
+  </details>
+</div>

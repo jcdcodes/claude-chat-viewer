@@ -1,0 +1,39 @@
+{% if view == "grouped" %}
+  {% for project in projects %}
+  <div class="project-group">
+    <h2 class="project-name">{{ project.name }}</h2>
+    {% for session in project.sorted_sessions %}
+    <a href="/session/{{ session.id }}" class="session-row">
+      <div class="session-info">
+        <span class="session-title">{{ session.title }}</span>
+        {% if session.git_branch %}
+        <span class="session-branch">{{ session.git_branch }}</span>
+        {% endif %}
+      </div>
+      <div class="session-meta">
+        <span>{{ session.file_size_display }}</span>
+        <span>{{ session.interaction_time_display }}</span>
+        <span>{{ session.timestamp.strftime('%b %-d') }}</span>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  {% endfor %}
+{% else %}
+  {% for project, session in flat_sessions %}
+  <a href="/session/{{ session.id }}" class="session-row">
+    <div class="session-info">
+      <span class="session-title">{{ session.title }}</span>
+      <span class="project-name-inline">{{ project.name }}</span>
+      {% if session.git_branch %}
+      <span class="session-branch">{{ session.git_branch }}</span>
+      {% endif %}
+    </div>
+    <div class="session-meta">
+      <span>{{ session.file_size_display }}</span>
+      <span>{{ session.interaction_time_display }}</span>
+      <span>{{ session.timestamp.strftime('%b %-d') }}</span>
+    </div>
+  </a>
+  {% endfor %}
+{% endif %}

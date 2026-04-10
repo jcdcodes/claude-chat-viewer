@@ -1,0 +1,47 @@
+<div class="subagent-conversation">
+  {% for message in subagent.messages %}
+    <div class="message message-{{ message.type }}">
+      <div class="message-header">
+        {% if message.type == "user" %}
+          <span class="message-author">Prompt</span>
+        {% else %}
+          <span class="message-author author-assistant">Agent</span>
+          {% if message.model %}
+          <span class="message-model">{{ message.model }}</span>
+          {% endif %}
+        {% endif %}
+      </div>
+      <div class="message-body">
+        {% for block in message.content %}
+          {% if block.type == "text" %}
+            <div class="text-block">{{ block.text }}</div>
+          {% elif block.type == "thinking" %}
+            <details class="thinking-block collapsible-thinking">
+              <summary>Thinking...</summary>
+              <div class="thinking-content">{{ block.thinking }}</div>
+            </details>
+          {% elif block.type == "tool_use" %}
+            {% set result_block = namespace(value=None) %}
+            {% for b in message.content %}
+              {% if b.type == "tool_result" and b.tool_use_id == block.tool_id %}
+                {% set result_block.value = b %}
+              {% endif %}
+            {% endfor %}
+            <details class="tool-call collapsible-tool">
+              <summary>
+                <span class="tool-name">{{ block.tool_name }}</span>
+                <span class="tool-args">{{ block.input | string | truncate(80) }}</span>
+              </summary>
+              <div class="tool-input"><pre>{{ block.input | tojson(indent=2) }}</pre></div>
+              {% if result_block.value %}
+              <div class="tool-output {% if result_block.value.is_error %}tool-error{% endif %}">
+                <pre>{{ result_block.value.content }}</pre>
+              </div>
+              {% endif %}
+            </details>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  {% endfor %}
+</div>

@@ -1,0 +1,18 @@
+{% set result_block = namespace(value=None) %}
+{% for b in message.content %}
+  {% if b.type == "tool_result" and b.tool_use_id == block.tool_id %}
+    {% set result_block.value = b %}
+  {% endif %}
+{% endfor %}
+<details class="tool-call collapsible-tool">
+  <summary>
+    <span class="tool-name">{{ block.tool_name }}</span>
+    <span class="tool-args">{{ block.input | string | truncate(80) }}</span>
+  </summary>
+  <div class="tool-input"><pre>{{ block.input | tojson(indent=2) }}</pre></div>
+  {% if result_block.value %}
+  <div class="tool-output {% if result_block.value.is_error %}tool-error{% endif %}">
+    <pre>{{ result_block.value.content }}</pre>
+  </div>
+  {% endif %}
+</details>

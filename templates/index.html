@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header">
+  <h1>Claude Transcripts</h1>
+  <div class="controls">
+    <form action="/search" method="get">
+      <input type="text" name="q" placeholder="Search all sessions...">
+    </form>
+    <div class="view-toggle">
+      <button class="active" hx-get="/api/sessions?view=grouped" hx-target="#session-list" onclick="setActiveToggle(this)">Grouped</button>
+      <button hx-get="/api/sessions?view=flat" hx-target="#session-list" onclick="setActiveToggle(this)">Flat</button>
+    </div>
+  </div>
+</div>
+<div id="session-list">
+  {% include "partials/session_list.html" %}
+</div>
+{% endblock %}

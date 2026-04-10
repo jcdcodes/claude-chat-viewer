@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="session-header">
+  <a href="/">&#8592; All sessions</a>
+  <h1>{{ session.title }}</h1>
+  <div class="session-header-meta">
+    <span class="project-name">{{ project.name }}</span>
+    {% if session.git_branch %}&middot; {{ session.git_branch }}{% endif %}
+    &middot; {{ session.timestamp.strftime('%b %-d, %Y') }}
+    &middot; {{ session.file_size_display }}
+    &middot; {{ session.interaction_time_display }}
+  </div>
+  <div class="collapse-controls">
+    <button id="toggle-thinking" data-label="Thinking"
+            onclick="toggleAll('.collapsible-thinking', 'thinking-state', this)">
+      Thinking: collapsed
+    </button>
+    <button id="toggle-tools" data-label="Tool calls"
+            onclick="toggleAll('.collapsible-tool', 'tool-state', this)">
+      Tool calls: collapsed
+    </button>
+  </div>
+</div>
+<div class="conversation">
+  {% for message in session.messages %}
+    {% include "partials/message.html" %}
+    {% for block in message.content %}
+      {% if block.type == "tool_use" and block.tool_name == "Agent" %}
+        {% for sub_id, subagent in session.subagents.items() %}
+          {% if subagent.description == block.input.get("description", "") %}
+            {% include "partials/subagent.html" %}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+</div>
+{% endblock %}

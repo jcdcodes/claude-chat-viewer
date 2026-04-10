@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-header">
+  <h1>Claude Transcripts</h1>
+  <form action="/search" method="get">
+    <input type="text" name="q" value="{{ query }}" placeholder="Search all sessions...">
+  </form>
+</div>
+{% if query %}
+  {% if results %}
+    <div class="search-results">
+      {% for result in results %}
+      <a href="/session/{{ result.session_id }}#msg-{{ result.message_uuid }}" class="search-result">
+        <div class="search-result-header">
+          <span class="session-title">{{ result.session_title }}</span>
+          <span class="project-name-inline">{{ result.project_name }}</span>
+        </div>
+        <div class="search-result-snippet">{{ result.snippet }}</div>
+      </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>No results for "{{ query }}"</p>
+  {% endif %}
+{% endif %}
+{% endblock %}
