@@ -25,6 +25,8 @@ _USER_PREFIX_RE = re.compile(r"^-Users-[^-]+-")
 def load_projects(base_path: Path) -> list[Project]:
     projects = []
     base = Path(base_path)
+    if not base.exists():
+        return projects
     for entry in sorted(base.iterdir()):
         if not entry.is_dir() or entry.name.startswith("."):
             continue
@@ -35,6 +37,34 @@ def load_projects(base_path: Path) -> list[Project]:
         if sessions:
             projects.append(Project(name=display_name, path=str(entry), sessions=sessions))
     return projects
+
+
+def load_projects_merged(dirs: list[Path]) -> list[Project]:
+    """Load projects from multiple directories, deduplicating sessions by ID.
+
+    Later directories in the list take priority (their version of a session
+    wins over earlier ones). This lets live ~/.claude/projects/ overlay a
+    backup directory.
+    """
+    # Collect all sessions keyed by (project_name, session_id)
+    all_sessions: dict[tuple[str, str], tuple[str, Session]] = {}
+    project_paths: dict[str, str] = {}
+
+    for d in dirs:
+        for project in load_projects(d):
+            project_paths[project.name] = project.path
+            for session in project.sessions:
+                all_sessions[(project.name, session.id)] = (project.path, session)
+
+    # Regroup into Projects
+    grouped: dict[str, list[Session]] = {}
+    for (proj_name, _sid), (_path, session) in all_sessions.items():
+        grouped.setdefault(proj_name, []).append(session)
+
+    return [
+        Project(name=name, path=project_paths[name], sessions=sessions)
+        for name, sessions in grouped.items()
+    ]
 
 
 def _load_sessions(project_dir: Path, project_name: str) -> list[Session]:

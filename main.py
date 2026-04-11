@@ -1,21 +1,32 @@
 # main.py
 from __future__ import annotations
 from pathlib import Path
+import markdown as md
+from markupsafe import Markup
 from flask import Flask, abort, render_template, request
-from parser import load_projects
+from parser import load_projects, load_projects_merged
 from search import search_sessions
 
-DEFAULT_PROJECTS_DIR = Path.home() / ".claude" / "projects"
+LIVE_PROJECTS_DIR = Path.home() / ".claude" / "projects"
+DEFAULT_BACKUP_DIR = Path.home() / "Sync" / "air-claude-history-backup"
 
 
 def create_app(projects_dir: Path | None = None) -> Flask:
-    if projects_dir is None:
-        projects_dir = DEFAULT_PROJECTS_DIR
-
     app = Flask(__name__)
     from search import highlight_snippet
     app.jinja_env.filters["highlight"] = lambda snippet, query: highlight_snippet(snippet, query)
-    projects = load_projects(projects_dir)
+
+    _md = md.Markdown(extensions=["fenced_code", "tables", "nl2br"])
+
+    def render_markdown(text: str) -> Markup:
+        _md.reset()
+        return Markup(_md.convert(text))
+
+    app.jinja_env.filters["markdown"] = render_markdown
+
+    backup_dir = projects_dir if projects_dir is not None else DEFAULT_BACKUP_DIR
+    # Load backup first, then overlay live data (live wins on duplicates)
+    projects = load_projects_merged([backup_dir, LIVE_PROJECTS_DIR])
 
     session_lookup: dict[str, tuple] = {}
     for project in projects:
@@ -71,5 +82,17 @@ def create_app(projects_dir: Path | None = None) -> Flask:
 
 
 if __name__ == "__main__":
-    app = create_app()
-    app.run(host="127.0.0.1", port=5000, debug=True)
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Claude transcript viewer")
+    parser.add_argument(
+        "--data-dir",
+        type=Path,
+        default=None,
+        help="Backup directory to overlay with live ~/.claude/projects/ data (default: ~/Sync/air-claude-history-backup/)",
+    )
+    parser.add_argument("--port", type=int, default=5000)
+    args = parser.parse_args()
+
+    app = create_app(args.data_dir)
+    app.run(host="127.0.0.1", port=args.port, debug=True)

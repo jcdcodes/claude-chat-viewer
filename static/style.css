@@ -427,4 +427,58 @@ mark {
   100% { background: transparent; }
 }
 
+.text-block-raw {
+  display: none;
+  font-family: Menlo, ui-monospace, 'SF Mono', monospace;
+  font-size: 12px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.text-block-md h1, .text-block-md h2, .text-block-md h3,
+.text-block-md h4, .text-block-md h5, .text-block-md h6 {
+  margin: 12px 0 6px;
+  color: #000;
+}
+
+.text-block-md h1 { font-size: 18px; }
+.text-block-md h2 { font-size: 16px; }
+.text-block-md h3 { font-size: 14px; }
+
+.text-block-md p { margin: 6px 0; }
+
+.text-block-md ul, .text-block-md ol {
+  margin: 6px 0;
+  padding-left: 24px;
+}
+
+.text-block-md pre {
+  background: #e4e4e4;
+  padding: 10px 12px;
+  border-radius: 4px;
+  margin: 8px 0;
+  overflow-x: auto;
+}
+
+.text-block-md pre code {
+  background: none;
+  padding: 0;
+}
+
+.text-block-md table {
+  border-collapse: collapse;
+  margin: 8px 0;
+}
+
+.text-block-md th, .text-block-md td {
+  border: 1px solid #ccc;
+  padding: 4px 8px;
+  text-align: left;
+}
+
+.text-block-md th {
+  background: #f0f0f0;
+  font-weight: 700;
+}
+
 .hidden { display: none; }
