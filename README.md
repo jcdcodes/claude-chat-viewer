@@ -2,6 +2,8 @@
 
 A read-only web interface for browsing Claude Code conversation transcripts stored in `~/.claude/projects/`.
 
+The whole project (except this sentence) was mostly written in Claude Code with Superpowers, and I've only scanned most of the source code.
+
 ## Features
 
 - **Grouped and flat views** of sessions, sorted reverse-chronologically
