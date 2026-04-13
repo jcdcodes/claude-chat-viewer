@@ -482,3 +482,35 @@ mark {
 }
 
 .hidden { display: none; }
+
+.insight-block {
+  border: 1px solid #e0c860;
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 8px 0;
+}
+
+.insight-header {
+  padding: 8px 12px;
+  background: #fffbee;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  color: #b08600;
+  list-style: none;
+}
+
+.insight-header::before {
+  content: "\25B6 ";
+  font-size: 10px;
+}
+
+.insight-block[open] > .insight-header::before {
+  content: "\25BC ";
+}
+
+.insight-content {
+  padding: 10px 14px;
+  background: #fffdf5;
+  border-top: 1px solid #e0c860;
+}

@@ -8,7 +8,7 @@
       <span class="message-model">{{ message.model }}</span>
       {% endif %}
     {% endif %}
-    <span class="message-time">{{ message.timestamp.strftime('%I:%M %p') }}</span>
+    <span class="message-time">{{ message.timestamp.strftime('%H:%M %Z') }}</span>
   </div>
   <div class="message-body">
     {% for block in message.content %}

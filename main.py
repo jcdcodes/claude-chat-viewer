@@ -25,21 +25,26 @@ def create_app(projects_dir: Path | None = None) -> Flask:
     app.jinja_env.filters["markdown"] = render_markdown
 
     backup_dir = projects_dir if projects_dir is not None else DEFAULT_BACKUP_DIR
-    # Load backup first, then overlay live data (live wins on duplicates)
-    projects = load_projects_merged([backup_dir, LIVE_PROJECTS_DIR])
+    data_dirs = [backup_dir, LIVE_PROJECTS_DIR]
 
-    session_lookup: dict[str, tuple] = {}
-    for project in projects:
-        for session in project.sessions:
-            session_lookup[session.id] = (project, session)
+    def _load_data():
+        """Reload projects and session lookup from disk."""
+        projects = load_projects_merged(data_dirs)
+        session_lookup: dict[str, tuple] = {}
+        for project in projects:
+            for session in project.sessions:
+                session_lookup[session.id] = (project, session)
+        return projects, session_lookup
 
     @app.route("/")
     def index():
+        projects, _ = _load_data()
         sorted_projects = sorted(projects, key=lambda p: p.latest_timestamp, reverse=True)
         return render_template("index.html", projects=sorted_projects, view="grouped")
 
     @app.route("/api/sessions")
     def api_sessions():
+        projects, _ = _load_data()
         view = request.args.get("view", "grouped")
         sorted_projects = sorted(projects, key=lambda p: p.latest_timestamp, reverse=True)
         if view == "flat":
@@ -53,6 +58,7 @@ def create_app(projects_dir: Path | None = None) -> Flask:
 
     @app.route("/session/<session_id>")
     def session_view(session_id: str):
+        _, session_lookup = _load_data()
         entry = session_lookup.get(session_id)
         if not entry:
             abort(404)
@@ -61,6 +67,7 @@ def create_app(projects_dir: Path | None = None) -> Flask:
 
     @app.route("/api/subagent/<session_id>/<subagent_id>")
     def subagent_detail(session_id: str, subagent_id: str):
+        _, session_lookup = _load_data()
         entry = session_lookup.get(session_id)
         if not entry:
             abort(404)
@@ -72,6 +79,7 @@ def create_app(projects_dir: Path | None = None) -> Flask:
 
     @app.route("/search")
     def search_view():
+        projects, _ = _load_data()
         query = request.args.get("q", "").strip()
         results = []
         if query:

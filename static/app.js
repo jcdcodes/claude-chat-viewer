@@ -38,7 +38,7 @@ function applyContentMode() {
     el.style.display = mode === "markdown" ? "" : "none";
   });
   document.querySelectorAll(".text-block-raw").forEach(function(el) {
-    el.style.display = mode === "raw" ? "" : "none";
+    el.style.display = mode === "raw" ? "block" : "none";
   });
 }
 
@@ -50,10 +50,41 @@ function toggleContentMode(button) {
   button.textContent = "Content: " + next;
 }
 
+function styleInsightBlocks() {
+  document.querySelectorAll(".text-block-md code").forEach(function(code) {
+    if (!/★\s*Insight/.test(code.textContent)) return;
+    var p = code.closest("p");
+    if (!p || p.parentElement.classList.contains("collapsible-insight")) return;
+    // Find and remove the footer code span
+    var nodes = Array.from(p.childNodes);
+    var footerCode = null;
+    for (var i = nodes.length - 1; i >= 0; i--) {
+      if (nodes[i].nodeName === "CODE" && /^─+$/.test(nodes[i].textContent)) {
+        footerCode = nodes[i];
+        break;
+      }
+    }
+    code.remove();
+    if (footerCode) footerCode.remove();
+    // Wrap in a <details> with the same pattern as thinking/tool blocks
+    var details = document.createElement("details");
+    details.className = "collapsible-insight insight-block";
+    var summary = document.createElement("summary");
+    summary.className = "insight-header";
+    summary.textContent = "★ Insight";
+    details.appendChild(summary);
+    p.parentNode.insertBefore(details, p);
+    p.classList.add("insight-content");
+    details.appendChild(p);
+  });
+  applyCollapseState(".collapsible-insight", "insight-state");
+}
+
 document.addEventListener("DOMContentLoaded", function() {
   applyCollapseState(".collapsible-thinking", "thinking-state");
   applyCollapseState(".collapsible-tool", "tool-state");
   applyContentMode();
+  styleInsightBlocks();
 
   var thinkingBtn = document.getElementById("toggle-thinking");
   if (thinkingBtn) {
@@ -62,6 +93,10 @@ document.addEventListener("DOMContentLoaded", function() {
   var toolBtn = document.getElementById("toggle-tools");
   if (toolBtn) {
     toolBtn.textContent = "Tool calls: " + getPreference("tool-state", "collapsed");
+  }
+  var insightBtn = document.getElementById("toggle-insights");
+  if (insightBtn) {
+    insightBtn.textContent = "Insights: " + getPreference("insight-state", "collapsed");
   }
   var contentBtn = document.getElementById("toggle-content");
   if (contentBtn) {
@@ -82,4 +117,5 @@ document.addEventListener("htmx:afterSwap", function() {
   applyCollapseState(".collapsible-thinking", "thinking-state");
   applyCollapseState(".collapsible-tool", "tool-state");
   applyContentMode();
+  styleInsightBlocks();
 });
