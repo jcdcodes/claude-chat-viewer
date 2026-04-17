@@ -110,12 +110,12 @@ def _parse_session(jsonl_path: Path, session_id: str, project_name: str) -> Sess
     )
 
 
-def _build_messages(lines: list[dict[str, Any]]) -> list[Message]:
+def _build_messages(lines: list[dict[str, Any]], *, include_sidechain: bool = False) -> list[Message]:
     assistant_groups: dict[str, list[dict]] = {}
     ordered: list[tuple[str, Any]] = []
 
     for line in lines:
-        if line.get("isSidechain"):
+        if not include_sidechain and line.get("isSidechain"):
             continue
         msg_type = line.get("type")
         if msg_type == "assistant":
@@ -255,7 +255,7 @@ def _load_subagents(subagents_dir: Path) -> dict[str, SubagentSession]:
                     if line:
                         lines.append(json.loads(line))
             conversation_lines = [r for r in lines if r.get("type") in ("user", "assistant")]
-            messages = _build_messages(conversation_lines)
+            messages = _build_messages(conversation_lines, include_sidechain=True)
             subagents[agent_id] = SubagentSession(
                 id=agent_id, agent_type=meta.get("agentType", "Unknown"),
                 description=meta.get("description", ""), messages=messages,
