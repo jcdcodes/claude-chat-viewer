@@ -97,6 +97,30 @@ class Session:
         return f"~{hours} hr {minutes} min"
 
     @property
+    def last_timestamp(self) -> datetime:
+        if self.messages:
+            return self.messages[-1].timestamp
+        return self.timestamp
+
+    @property
+    def date_range_display(self) -> str:
+        first = self.timestamp
+        last = self.last_timestamp
+        if first.date() == last.date():
+            return first.strftime('%b %-d, %Y')
+        if first.year == last.year:
+            return f"{first.strftime('%b %-d')} – {last.strftime('%b %-d, %Y')}"
+        return f"{first.strftime('%b %-d, %Y')} – {last.strftime('%b %-d, %Y')}"
+
+    @property
+    def date_range_short(self) -> str:
+        first = self.timestamp
+        last = self.last_timestamp
+        if first.date() == last.date():
+            return first.strftime('%b %-d')
+        return f"{first.strftime('%b %-d')} – {last.strftime('%b %-d')}"
+
+    @property
     def file_size_display(self) -> str:
         if self.file_size >= 1_000_000:
             return f"{self.file_size / 1_048_576:.1f} MB"

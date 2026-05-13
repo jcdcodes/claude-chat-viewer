@@ -6,7 +6,7 @@
   <div class="session-header-meta">
     <span class="project-name">{{ project.name }}</span>
     {% if session.git_branch %}&middot; {{ session.git_branch }}{% endif %}
-    &middot; {{ session.timestamp.strftime('%b %-d, %Y') }}
+    &middot; {{ session.date_range_display }}
     &middot; {{ session.file_size_display }}
     &middot; {{ session.interaction_time_display }}
   </div>

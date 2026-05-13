@@ -13,7 +13,7 @@
       <div class="session-meta">
         <span>{{ session.file_size_display }}</span>
         <span>{{ session.interaction_time_display }}</span>
-        <span>{{ session.timestamp.strftime('%b %-d') }}</span>
+        <span>{{ session.date_range_short }}</span>
       </div>
     </a>
     {% endfor %}
@@ -32,7 +32,7 @@
     <div class="session-meta">
       <span>{{ session.file_size_display }}</span>
       <span>{{ session.interaction_time_display }}</span>
-      <span>{{ session.timestamp.strftime('%b %-d') }}</span>
+      <span>{{ session.date_range_short }}</span>
     </div>
   </a>
   {% endfor %}
